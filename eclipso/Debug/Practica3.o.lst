@@ -1,0 +1,120 @@
+   1              	# 1 "../Practica3.asm"
+   1              	@Javier Orbis Ramirez Y Samuel Asanza Mesa
+   0              	
+   0              	
+   0              	
+   2              	.global start
+   3              	.equ N,8
+   4              	.data
+   5 0000 07000000 	A: .word 7,3,25,4,75,2,1,1
+   5      03000000 
+   5      19000000 
+   5      04000000 
+   5      4B000000 
+   6              	.bss
+   7 0000 00000000 	B: .space N*4
+   7      00000000 
+   7      00000000 
+   7      00000000 
+   7      00000000 
+   8              	.text
+   9              	start:
+  10 0000 00B0A0E3 	   mov fp, #0
+  11 0004 E8109FE5 	   LDR R1,=A
+  12 0008 E8209FE5 	   LDR R2,=B
+  13 000c 0830A0E3 	   MOV R3,#N
+  14 0010 0040A0E3 	   MOV R4,#0
+  15              	FOR:
+  16 0014 030054E1 	   CMP R4,R3
+  17 0018 060000AA 	   BGE LLAMADA
+  18 001c 0A0000EB 	   BL MAX
+  19 0020 056191E7 	   LDR R6,[R1,R5,LSL#2]
+  20 0024 046182E7 	   STR R6,[R2,R4,LSL#2]
+  21 0028 0060A0E3 	   MOV R6,#0
+  22 002c 056181E7 	   STR R6,[R1,R5,LSL#2]
+  23 0030 014084E2 	   ADD R4,R4,#1
+  24 0034 F6FFFFEA 	   b FOR
+  25              	LLAMADA:
+  26 0038 B4109FE5 		ldr r1,=A
+  27 003c B4009FE5 		ldr r0,=B
+  28 0040 0820A0E3 		MOV r2, #N
+  29 0044 130000EB 		bl invertir
+  30 0048 280000EA 		b FIN
+  31              	MAX:
+  32 004c C04F2DE9 	   push {r6-r10,fp,lr}
+  33 0050 18B08DE2 	   add fp, sp, #24 @ 24=4*7-4
+  34 0054 0060A0E3 	   MOV R6,#0
+  35 0058 0070A0E3 	   MOV R7,#0
+  36 005c 0080A0E3 	   MOV R8,#0
+  37 0060 0390A0E1 	   MOV R9,R3
+  38 0064 01A0A0E1 	   MOV R10,R1
+  39              	FOR2:
+  40 0068 090058E1 	   CMP R8,R9
+  41 006c 060000AA 	   BGE FINFOR2
+  42 0070 08519AE7 	   LDR R5,[R10,R8,LSL #2]
+  43              	IF:
+  44 0074 060055E1 	   CMP R5,R6
+  45 0078 010000BA 	   BLT FINIF
+  46 007c 0560A0E1 	   MOV R6,R5
+  47 0080 0870A0E1 	   MOV R7,R8
+  48              	FINIF:
+  49 0084 018088E2 	   ADD R8,R8,#1
+  50 0088 F6FFFFEA 	   B FOR2
+  51              	FINFOR2:
+  52 008c 0750A0E1 		MOV R5,R7
+  53 0090 C04FBDE8 	    pop {r6-r10,fp,lr}
+  54 0094 0EF0A0E1 	    MOV PC,LR
+  55              	invertir:
+  56 0098 30002DE9 		push {r4,r5}
+  57 009c 0030A0E3 		mov r3,#0
+  58 00a0 0250A0E1 		mov r5,r2
+  59              	loop_i:
+  60 00a4 020053E1 		cmp r3,r2
+  61 00a8 090000AA 		bge fin_inv
+  62 00ac 034190E7 		ldr r4,[r0,r3,lsl #2]
+  63 00b0 015045E2 		sub r5,r5,#1
+  64 00b4 03402DE9 		push {r0,r1,lr}
+  65 00b8 0400A0E1 		mov r0, r4
+  66 00bc 060000EB 		bl espar
+  67 00c0 0060A0E1 		mov r6, r0
+  68 00c4 0340BDE8 		pop {r0,r1,lr}
+  69 00c8 056181E7 		str r6,[r1,r5,lsl #2]
+  70 00cc 013083E2 		add r3, r3, #1
+  71 00d0 F3FFFFEA 		b loop_i
+  72              	fin_inv:
+  73 00d4 3000BDE8 		pop {r4,r5}
+  74 00d8 0EF0A0E1 		mov pc, lr
+  75              	espar:
+  76 00dc 011000E2 		and r1,r0,#1
+  77 00e0 000051E3 		cmp r1,#0
+  78 00e4 0000001A 		bne fin_espar
+  79 00e8 0000A0E3 		mov r0,#0
+  80              	fin_espar:
+  81 00ec 0EF0A0E1 		mov pc,lr
+  82 00f0 FEFFFFEA 	FIN: B .
+  83 00f4 00000000 	.END
+  83      00000000 
+DEFINED SYMBOLS
+    ../Practica3.asm:9      .text:00000000 start
+    ../Practica3.asm:3      *ABS*:00000008 N
+    ../Practica3.asm:5      .data:00000000 A
+    ../Practica3.asm:7      .bss:00000000 B
+    ../Practica3.asm:7      .bss:00000000 $d
+    ../Practica3.asm:10     .text:00000000 $a
+    ../Practica3.asm:15     .text:00000014 FOR
+    ../Practica3.asm:25     .text:00000038 LLAMADA
+    ../Practica3.asm:31     .text:0000004c MAX
+    ../Practica3.asm:55     .text:00000098 invertir
+    ../Practica3.asm:82     .text:000000f0 FIN
+    ../Practica3.asm:39     .text:00000068 FOR2
+    ../Practica3.asm:51     .text:0000008c FINFOR2
+    ../Practica3.asm:43     .text:00000074 IF
+    ../Practica3.asm:48     .text:00000084 FINIF
+    ../Practica3.asm:59     .text:000000a4 loop_i
+    ../Practica3.asm:72     .text:000000d4 fin_inv
+    ../Practica3.asm:75     .text:000000dc espar
+    ../Practica3.asm:80     .text:000000ec fin_espar
+    ../Practica3.asm:83     .text:000000f4 $d
+                   .debug_aranges:0000000c $d
+
+NO UNDEFINED SYMBOLS

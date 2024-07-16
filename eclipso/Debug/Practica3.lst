@@ -1,0 +1,192 @@
+
+Practica3.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000020  0c000000  0c000000  00008000  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .bss          00000020  0c000020  0c000020  00008020  2**0
+                  ALLOC
+  2 .text         000000fc  0c000040  0c000040  00008040  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  3 .ARM.attributes 00000022  00000000  00000000  0000813c  2**0
+                  CONTENTS, READONLY
+  4 .debug_line   0000007c  00000000  00000000  0000815e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000054  00000000  00000000  000081da  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 00000014  00000000  00000000  0000822e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_aranges 00000020  00000000  00000000  00008248  2**3
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+0c000040 <start>:
+A: .word 7,3,25,4,75,2,1,1
+.bss
+B: .space N*4
+.text
+start:
+   mov fp, #0
+ c000040:	e3a0b000 	mov	fp, #0
+   LDR R1,=A
+ c000044:	e59f10e8 	ldr	r1, [pc, #232]	; c000134 <FIN+0x4>
+   LDR R2,=B
+ c000048:	e59f20e8 	ldr	r2, [pc, #232]	; c000138 <FIN+0x8>
+   MOV R3,#N
+ c00004c:	e3a03008 	mov	r3, #8
+   MOV R4,#0
+ c000050:	e3a04000 	mov	r4, #0
+
+0c000054 <FOR>:
+FOR:
+   CMP R4,R3
+ c000054:	e1540003 	cmp	r4, r3
+   BGE LLAMADA
+ c000058:	aa000006 	bge	c000078 <LLAMADA>
+   BL MAX
+ c00005c:	eb00000a 	bl	c00008c <MAX>
+   LDR R6,[R1,R5,LSL#2]
+ c000060:	e7916105 	ldr	r6, [r1, r5, lsl #2]
+   STR R6,[R2,R4,LSL#2]
+ c000064:	e7826104 	str	r6, [r2, r4, lsl #2]
+   MOV R6,#0
+ c000068:	e3a06000 	mov	r6, #0
+   STR R6,[R1,R5,LSL#2]
+ c00006c:	e7816105 	str	r6, [r1, r5, lsl #2]
+   ADD R4,R4,#1
+ c000070:	e2844001 	add	r4, r4, #1
+   b FOR
+ c000074:	eafffff6 	b	c000054 <FOR>
+
+0c000078 <LLAMADA>:
+LLAMADA:
+	ldr r1,=A
+ c000078:	e59f10b4 	ldr	r1, [pc, #180]	; c000134 <FIN+0x4>
+	ldr r0,=B
+ c00007c:	e59f00b4 	ldr	r0, [pc, #180]	; c000138 <FIN+0x8>
+	MOV r2, #N
+ c000080:	e3a02008 	mov	r2, #8
+	bl invertir
+ c000084:	eb000013 	bl	c0000d8 <invertir>
+	b FIN
+ c000088:	ea000028 	b	c000130 <FIN>
+
+0c00008c <MAX>:
+MAX:
+   push {r6-r10,fp,lr}
+ c00008c:	e92d4fc0 	push	{r6, r7, r8, r9, sl, fp, lr}
+   add fp, sp, #24 @ 24=4*7-4
+ c000090:	e28db018 	add	fp, sp, #24
+   MOV R6,#0
+ c000094:	e3a06000 	mov	r6, #0
+   MOV R7,#0
+ c000098:	e3a07000 	mov	r7, #0
+   MOV R8,#0
+ c00009c:	e3a08000 	mov	r8, #0
+   MOV R9,R3
+ c0000a0:	e1a09003 	mov	r9, r3
+   MOV R10,R1
+ c0000a4:	e1a0a001 	mov	sl, r1
+
+0c0000a8 <FOR2>:
+FOR2:
+   CMP R8,R9
+ c0000a8:	e1580009 	cmp	r8, r9
+   BGE FINFOR2
+ c0000ac:	aa000006 	bge	c0000cc <FINFOR2>
+   LDR R5,[R10,R8,LSL #2]
+ c0000b0:	e79a5108 	ldr	r5, [sl, r8, lsl #2]
+
+0c0000b4 <IF>:
+IF:
+   CMP R5,R6
+ c0000b4:	e1550006 	cmp	r5, r6
+   BLT FINIF
+ c0000b8:	ba000001 	blt	c0000c4 <FINIF>
+   MOV R6,R5
+ c0000bc:	e1a06005 	mov	r6, r5
+   MOV R7,R8
+ c0000c0:	e1a07008 	mov	r7, r8
+
+0c0000c4 <FINIF>:
+FINIF:
+   ADD R8,R8,#1
+ c0000c4:	e2888001 	add	r8, r8, #1
+   B FOR2
+ c0000c8:	eafffff6 	b	c0000a8 <FOR2>
+
+0c0000cc <FINFOR2>:
+FINFOR2:
+	MOV R5,R7
+ c0000cc:	e1a05007 	mov	r5, r7
+    pop {r6-r10,fp,lr}
+ c0000d0:	e8bd4fc0 	pop	{r6, r7, r8, r9, sl, fp, lr}
+    MOV PC,LR
+ c0000d4:	e1a0f00e 	mov	pc, lr
+
+0c0000d8 <invertir>:
+invertir:
+	push {r4,r5}
+ c0000d8:	e92d0030 	push	{r4, r5}
+	mov r3,#0
+ c0000dc:	e3a03000 	mov	r3, #0
+	mov r5,r2
+ c0000e0:	e1a05002 	mov	r5, r2
+
+0c0000e4 <loop_i>:
+loop_i:
+	cmp r3,r2
+ c0000e4:	e1530002 	cmp	r3, r2
+	bge fin_inv
+ c0000e8:	aa000009 	bge	c000114 <fin_inv>
+	ldr r4,[r0,r3,lsl #2]
+ c0000ec:	e7904103 	ldr	r4, [r0, r3, lsl #2]
+	sub r5,r5,#1
+ c0000f0:	e2455001 	sub	r5, r5, #1
+	push {r0,r1,lr}
+ c0000f4:	e92d4003 	push	{r0, r1, lr}
+	mov r0, r4
+ c0000f8:	e1a00004 	mov	r0, r4
+	bl espar
+ c0000fc:	eb000006 	bl	c00011c <espar>
+	mov r6, r0
+ c000100:	e1a06000 	mov	r6, r0
+	pop {r0,r1,lr}
+ c000104:	e8bd4003 	pop	{r0, r1, lr}
+	str r6,[r1,r5,lsl #2]
+ c000108:	e7816105 	str	r6, [r1, r5, lsl #2]
+	add r3, r3, #1
+ c00010c:	e2833001 	add	r3, r3, #1
+	b loop_i
+ c000110:	eafffff3 	b	c0000e4 <loop_i>
+
+0c000114 <fin_inv>:
+fin_inv:
+	pop {r4,r5}
+ c000114:	e8bd0030 	pop	{r4, r5}
+	mov pc, lr
+ c000118:	e1a0f00e 	mov	pc, lr
+
+0c00011c <espar>:
+espar:
+	and r1,r0,#1
+ c00011c:	e2001001 	and	r1, r0, #1
+	cmp r1,#0
+ c000120:	e3510000 	cmp	r1, #0
+	bne fin_espar
+ c000124:	1a000000 	bne	c00012c <fin_espar>
+	mov r0,#0
+ c000128:	e3a00000 	mov	r0, #0
+
+0c00012c <fin_espar>:
+fin_espar:
+	mov pc,lr
+ c00012c:	e1a0f00e 	mov	pc, lr
+
+0c000130 <FIN>:
+FIN: B .
+ c000130:	eafffffe 	b	c000130 <FIN>
+ c000134:	0c000000 	.word	0x0c000000
+ c000138:	0c000020 	.word	0x0c000020
